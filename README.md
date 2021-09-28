@@ -8,11 +8,11 @@
 ![](https://img.shields.io/badge/cool-useless-green.svg)
 <!-- badges: end -->
 
-`gozer` allows you to attach a ‘destructor’ artefact (a function) to an
-R object.
+`gozer` allows you to attach a ‘destructor’ artefact (a function to call
+or string to print) to an R object.
 
 After the R object is destroyed (i.e. garbage collected) the
-‘destructor’ artefact is called.
+‘destructor’ artefact is called/printed.
 
 ## What’s in the box
 
@@ -28,13 +28,43 @@ with:
 remotes::install_github('coolbutuseless/gozer')
 ```
 
+## Printing a string as a ‘destructor’ artefact.
+
+``` r
+library(gozer)
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Define an object and add a string as a destruction artefact
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+a <- 'hello'
+a <- gozer(a, 'This object has now said goodbye')
+a
+```
+
+    #> [1] "hello"
+    #> attr(,"destructor")
+    #> <pointer: 0x0>
+    #> attr(,"class")
+    #> [1] "gozer_string"
+
+``` r
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Destroy the object and get the destruction artefact
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+rm(a)
+
+invisible(gc())
+```
+
+    #> This object has now said goodbye
+
 ## Calling a function as a ‘destructor’ artefact.
 
 ``` r
 library(gozer)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Funciton to call when object is destroyed. 
+# Function to call when object is destroyed. 
 # Argument will be an external pointer object which is unusable
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ff <- function(env) {
@@ -51,7 +81,9 @@ a
 
     #> [1] "hello"
     #> attr(,"destructor")
-    #> <environment: 0x7fb6dda26328>
+    #> <environment: 0x7f92321ebb20>
+    #> attr(,"class")
+    #> [1] "gozer_env"
 
 ``` r
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

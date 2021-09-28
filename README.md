@@ -8,11 +8,11 @@
 ![](https://img.shields.io/badge/cool-useless-green.svg)
 <!-- badges: end -->
 
-`gozer` allows you to attach a ‘destructor’ artefact (either a string or
-a function) to an R object.
+`gozer` allows you to attach a ‘destructor’ artefact (a function) to an
+R object.
 
-When the R object is destroyed (i.e. garbage collected) the ‘destructor’
-artefact is printed or called.
+After the R object is destroyed (i.e. garbage collected) the
+‘destructor’ artefact is called.
 
 ## What’s in the box
 
@@ -28,39 +28,6 @@ with:
 remotes::install_github('coolbutuseless/gozer')
 ```
 
-## Printing a string as a ‘destructor’ artefact.
-
-``` r
-library(gozer)
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Define an object and add a string destruction artefact
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-a <- 'hello'
-a <- gozer(a, "I was garbage collected! Goodbye ...")
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Destructor is added as object attribute as a NULL external pointer on t
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-a
-```
-
-    #> [1] "hello"
-    #> attr(,"destructor")
-    #> <pointer: 0x0>
-    #> attr(,"class")
-    #> [1] "gozer"
-
-``` r
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Destroy the object and get the destruction artefact
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-rm(a)
-invisible(gc())
-```
-
-    #> I was garbage collected! Goodbye ...
-
 ## Calling a function as a ‘destructor’ artefact.
 
 ``` r
@@ -70,33 +37,32 @@ library(gozer)
 # Funciton to call when object is destroyed. 
 # Argument will be an external pointer object which is unusable
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-ff <- function(ext_ptr) {
-  print("There was definitely a garbage collection event")
+ff <- function(env) {
+  cat("There was definitely a garbage collection event for object:", env$id, "\n")
 }
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Define an object and add a function as a destruction artefact
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 a <- 'hello'
-a <- gozer(a, ff)
+a <- gozer(a, ff, id = 'test 1')
 a
 ```
 
     #> [1] "hello"
     #> attr(,"destructor")
-    #> <pointer: 0x0>
-    #> attr(,"class")
-    #> [1] "gozer"
+    #> <environment: 0x7fb6dda26328>
 
 ``` r
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Destroy the object and get the destruction artefact
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 rm(a)
+
 invisible(gc())
 ```
 
-    #> [1] "There was definitely a garbage collection event"
+    #> There was definitely a garbage collection event for object: test 1
 
 ## Related Software
 

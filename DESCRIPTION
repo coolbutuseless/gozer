@@ -1,10 +1,10 @@
 Package: gozer
 Type: Package
-Title: Destructors for R Objects
-Version: 0.1.0
+Title: Destruction Artefacts for R Objects
+Version: 0.1.1
 Author: mikefc
 Maintainer: mikefc <mikefc@coolbutuseless.com>
-Description: Destructors for R objects.
+Description: Destruction artefacts for R objects.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

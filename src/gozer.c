@@ -25,24 +25,21 @@ void gozer_finalizer(SEXP ptr_) {
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Return a NULL external pointer with a finalizer
-// @param destructor_ string or function call only
+// @param destructor_ string only
 //
 // @return external pointer with a finalizer
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SEXP gozer_(SEXP destructor_) {
 
   SEXP ptr_;
-  if (isFunction(destructor_)) {
-    ptr_ = PROTECT(R_MakeExternalPtr(NULL, R_NilValue, R_NilValue));
-    R_RegisterFinalizer(ptr_, destructor_);
-  } else if (isString(destructor_)) {
+  if (isString(destructor_)) {
     ptr_ = PROTECT(R_MakeExternalPtr(NULL, R_NilValue, destructor_));
     R_RegisterCFinalizer(ptr_, gozer_finalizer);
   } else {
-    error("Only strings and functions are acceptable as destructors");
+    error("Only strings acceptable as destructors in gozer_()");
   }
 
-  SET_CLASS(ptr_, mkString("gozer"));
+  SET_CLASS(ptr_, mkString("gozer_string"));
 
   UNPROTECT(1);
   return ptr_;

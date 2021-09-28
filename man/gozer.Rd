@@ -4,17 +4,20 @@
 \alias{gozer}
 \title{Do something after an R object is destroyed (i.e. garbage collected)}
 \usage{
-gozer(obj, destructor)
+gozer(obj, destructor, ...)
 }
 \arguments{
 \item{obj}{any R object}
 
 \item{destructor}{string to print or function to call.  Note: function
-takes a single argument which should be discarded}
+must take a single argument which will be an environment}
+
+\item{...}{other named values added to environment. E.g. could pass in ID
+information so the object which was destroyed could be determined.}
 }
 \value{
-the object with an an added attribute.  A 'destructor' artefact which
-        will be printed/called after the object is destroyed.
+the object with an an added attribute i.e. 'destructor' artefact which
+        will be called/printed after the object is destroyed (garbage collected)
 }
 \description{
 Do something after an R object is destroyed (i.e. garbage collected)
